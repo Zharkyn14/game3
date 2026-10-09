@@ -1,7 +1,6 @@
 package kz.javaworkshop;
 
 import java.util.Arrays;
-import java.util.Locale;
 
 public class Inventory {
     private final Item[] items;
@@ -10,14 +9,14 @@ public class Inventory {
 
     public Inventory(int capacity, int maxWeightGrams) {
         if (capacity < 1 || capacity > 20) {
-            throw new IllegalArgumentException("Ёмкость инвентаря должна быть от 1 до 20.");
+            throw new IllegalArgumentException("Вместимость инвентаря должна быть от 1 до 20 ячеек");
         }
-        if (maxWeightGrams < 1 || maxWeightGrams > 100000) {
-            throw new IllegalArgumentException("Лимит массы должен быть от 1 до 100000 граммов.");
+        if (maxWeightGrams < 1 || maxWeightGrams > 100001) {
+            throw new IllegalArgumentException("Лимит массы должен быть от 1 до 100001 г");
         }
         this.items = new Item[capacity];
-        this.size = 0;
         this.maxWeightGrams = maxWeightGrams;
+        this.size = 0;
     }
 
     public boolean add(Item item) {
@@ -30,34 +29,9 @@ public class Inventory {
         if (totalWeightGrams() + item.getWeightGrams() > maxWeightGrams) {
             return false;
         }
-
         items[size] = item;
         size++;
         return true;
-    }
-
-    public Item remove(int index) {
-        if (index < 0 || index >= size) {
-            return null;
-        }
-
-        Item removedItem = items[index];
-
-        for (int i = index; i < size - 1; i++) {
-            items[i] = items[i + 1];
-        }
-
-        items[size - 1] = null;
-        size--;
-
-        return removedItem;
-    }
-
-    public Item get(int index) {
-        if (index < 0 || index >= size) {
-            return null;
-        }
-        return items[index];
     }
 
     public int size() {
@@ -82,34 +56,5 @@ public class Inventory {
 
     public Item[] snapshot() {
         return Arrays.copyOf(items, size);
-    }
-
-    public int getMaxWeightGrams() {
-        return maxWeightGrams;
-    }
-
-    public int getCapacity() {
-        return items.length;
-    }
-
-    public Item[] findByName(String query) {
-        if (query == null) {
-            throw new IllegalArgumentException("Поисковый запрос не может быть null.");
-        }
-
-        String normalizedQuery = query.strip().toLowerCase(Locale.ROOT);
-        
-        Item[] tempMatches = new Item[size];
-        int matchCount = 0;
-
-        for (int i = 0; i < size; i++) {
-            String normalizedName = items[i].getName().toLowerCase(Locale.ROOT);
-            if (normalizedName.contains(normalizedQuery)) {
-                tempMatches[matchCount] = items[i];
-                matchCount++;
-            }
-        }
-
-        return Arrays.copyOf(tempMatches, matchCount);
     }
 }
